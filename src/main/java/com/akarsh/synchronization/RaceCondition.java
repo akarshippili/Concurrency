@@ -1,23 +1,5 @@
 package com.akarsh.synchronization;
 
-
-class Counter {
-    private int count = 0;
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public void incrementCount() {
-        count++;
-    }
-}
-
-
 public class RaceCondition {
 
     public static void main(String[] args) {
@@ -53,4 +35,5 @@ public class RaceCondition {
         System.out.println(counter.getCount());
 
     }
+    
 }
