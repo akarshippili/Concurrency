@@ -1,13 +1,13 @@
 package com.akarsh.synchronization;
 
 
-class Resource<T> {
+class MyBlockingQueue<T> {
 
     private final java.util.Queue<T> queue = new java.util.LinkedList<>();
     private final int maxSize;
     private final Object lock = new Object();
 
-    public Resource(int maxSize) {
+    public MyBlockingQueue(int maxSize) {
         this.maxSize = maxSize;
     }
 
@@ -47,12 +47,12 @@ class Resource<T> {
 class LockExample {
     public static void main(String[] args) {
 
-        Resource<Integer> resource = new Resource<>(5);
+        MyBlockingQueue<Integer> resource = new MyBlockingQueue<>(5);
 
         Runnable producer = () -> {
             for (int i = 0; i <100; i++) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(1);
                     resource.put(i);
                     System.out.println("producing " + i);
                 } catch (InterruptedException e) {
@@ -60,6 +60,7 @@ class LockExample {
                 }
             }
         };
+
         Runnable consumer = () -> {
             for(int i = 0; i <100; i++){
                 try {
@@ -72,18 +73,18 @@ class LockExample {
         };
 
         Thread t1 = new Thread(producer);
-        Thread t2 = new Thread(producer);
-        Thread t3 = new Thread(producer);
-
-        Thread t4 = new Thread(consumer);
-        Thread t5 = new Thread(consumer);
+//        Thread t2 = new Thread(producer);
+//        Thread t3 = new Thread(producer);
+//
+//        Thread t4 = new Thread(consumer);
+//        Thread t5 = new Thread(consumer);
         Thread t6 = new Thread(consumer);
 
         t1.start();
-        t2.start();
-        t3.start();
-        t4.start();
-        t5.start();
+//        t2.start();
+//        t3.start();
+//        t4.start();
+//        t5.start();
         t6.start();
 
 
