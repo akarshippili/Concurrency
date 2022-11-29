@@ -11,20 +11,21 @@ class Resource<T> {
         this.maxSize = maxSize;
     }
 
-    public T take() {
-
+    public T take() throws InterruptedException {
         synchronized (lock) {
-            return queue.remove();
+            while (isEmpty()) lock.wait();
+            T item = queue.remove();
+            lock.notifyAll();
+            return item;
         }
-
     }
 
-    public void put(T value) {
-
+    public void put(T value) throws InterruptedException {
         synchronized (lock) {
+            while (isFull()) lock.wait();
             queue.add(value);
+            lock.notifyAll();
         }
-
     }
 
     public int getSize() {
@@ -46,10 +47,29 @@ class Resource<T> {
 class LockExample {
     public static void main(String[] args) {
 
-        Resource resource = new Resource(5);
+        Resource<Integer> resource = new Resource<>(5);
 
-        Runnable producer = () -> {};
-        Runnable consumer = () -> {};
+        Runnable producer = () -> {
+            for (int i = 0; i <100; i++) {
+                try {
+                    Thread.sleep(100);
+                    resource.put(i);
+                    System.out.println("producing " + i);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Runnable consumer = () -> {
+            for(int i = 0; i <100; i++){
+                try {
+                    Thread.sleep(500);
+                    System.out.println("consuming" + resource.take());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
 
         Thread t1 = new Thread(producer);
         Thread t2 = new Thread(producer);
