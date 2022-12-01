@@ -43,10 +43,8 @@ class MyBlockingQueue<T> {
 }
 
 
-
-class LockExample {
+public class WaitNotifyExample {
     public static void main(String[] args) {
-
         MyBlockingQueue<Integer> resource = new MyBlockingQueue<>(5);
 
         Runnable producer = () -> {
@@ -57,6 +55,7 @@ class LockExample {
                     System.out.println("producing " + i);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    Thread.currentThread().interrupt();
                 }
             }
         };
@@ -68,30 +67,16 @@ class LockExample {
                     System.out.println("consuming" + resource.take());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    // sonar comment -- check for reason why ?
+                    Thread.currentThread().interrupt();
                 }
             }
         };
 
         Thread t1 = new Thread(producer);
-//        Thread t2 = new Thread(producer);
-//        Thread t3 = new Thread(producer);
-//
-//        Thread t4 = new Thread(consumer);
-//        Thread t5 = new Thread(consumer);
-        Thread t6 = new Thread(consumer);
+        Thread t2 = new Thread(consumer);
 
         t1.start();
-//        t2.start();
-//        t3.start();
-//        t4.start();
-//        t5.start();
-        t6.start();
-
-
+        t2.start();
     }
-}
-
-
-public class WaitNotifyExample {
-    public static void main(String[] args) {}
 }
